@@ -1,0 +1,377 @@
+@import './base.css';
+
+#app {
+  background: linear-gradient(135deg, #00ff88, #21a6ff);
+  min-height: 100vh;
+  font-weight: normal;
+}
+
+/* Shared Style */
+.center-align {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.content-center {
+  text-align: center;
+}
+
+/* Home Component Style */
+.title {
+  position: relative;
+  font-size: 16vmin;
+  font-weight: 900;
+  background: linear-gradient(to right, #ff4343, #fdff6c, #6bffae, #b64aff, #ff6e6e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: popup_anim .5s;
+}
+
+.subtitle {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 4vmin;
+  margin-bottom: 256px;
+  text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+  color: white;
+  transform: scale(0);
+  animation: popup_anim .4s .25s forwards;
+}
+
+
+/* Auth Component Style */
+.auth-card {
+  display: flex;
+  position: relative;
+  background-color: white;
+  transform-style: preserve-3d;
+  animation: popup_anim .5s;
+}
+
+.auth-card .login, .auth-card .register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-card form {
+  padding: 48px;
+  text-align: center;
+}
+
+.auth-card p {
+  margin-bottom: 24px;
+}
+
+.auth-card p:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: blue;
+}
+
+.auth-card input {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  display: block;
+  width: 320px;
+  padding: 12px;
+  margin: 20px 0;
+  border: none;
+  outline: none;
+  background: aliceblue;
+  transition: all .5s;
+}
+
+.auth-card input::placeholder {
+  text-rendering: optimizeLegibility;
+  color: #CCCCCC;
+}
+
+.auth-card input:focus {
+  box-shadow: 0 0 24px rgba(0,0,0,0.1);
+  background: white;
+}
+
+.auth-card button {
+  font-family: 18px;
+  font-weight: bold;
+  width: 200px;
+  padding: 16px;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  transition: all ;
+  background: linear-gradient(45deg, #2dffca, #ea00ff);
+  color: white;
+}
+
+.auth-card button:hover, .auth-card button:focus {
+  cursor: pointer;
+  animation: button_anim .5s infinite;
+}
+
+.cover-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 104%;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  background: #91f6fa;
+  transform: translate(0%,-50%);
+  transition: all .3s;
+}
+
+.cover-panel.active {
+  background: rgb(179, 255, 220);
+  transform: translate(-100%,-50%);
+}
+
+.cover-panel h1 {
+  font-size: 48px;
+  letter-spacing: 4px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: gray;
+  transform: translate(-50%,-50%);
+}
+
+
+/*  Option Component Style  */
+.option-modal {
+  width: 400px;
+  padding: 24px;
+  border-radius: 4px;
+  box-shadow: 0 64px 56px rgba(0,0,0,0.1);
+  background: white;
+  animation: popup_anim .5s;
+}
+
+.option-modal h1 {
+  font-size: 5vmin;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #21a6ff;
+}
+
+.option-modal .form-check {
+  display: flex;
+  font-size: 18px;
+  align-items: center;
+}
+
+.option-modal .grid {
+  display: flex;
+}
+
+.option-modal .g-col-6:nth-child(1) {
+  display: flex;
+  flex-direction: column;
+}
+
+.option-modal .g-col-6:nth-child(2) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.option-modal button {
+  font-size: 20px;
+  width: 200px;
+  height: 48px;
+  margin: 32px 0 8px 0;
+}
+
+
+/* Playground Component Style */
+.board {
+  padding: 8vw 4vw;
+  text-align: center;
+}
+
+.board h1 {
+  font-weight: bold;
+  font-size: 40px;
+  margin-bottom: 20px;
+  color: #e8c4ff;
+  text-shadow: 1px 2px 2px rgba(0,0,0,0.5);
+}
+
+.board p {
+  font-size: 20px;
+}
+
+.playground {
+  display: grid;
+  width: 45vw;
+  height: 45vw;
+  perspective: 1000px;
+}
+
+.playground div {
+  position: relative;
+  margin: 3%;
+  cursor: pointer;
+  border-spacing: 20px;
+  transform-style: preserve-3d;
+  transition: all .5s;
+  animation: scale_anim .5s;
+}
+
+.playground div.active {
+  transform: rotateY(180deg);
+}
+
+.playground div.matched {
+  animation: disappear_card_anim .5s .5s forwards;
+}
+
+.playground div.hint {
+  border: 4px solid red;
+  border-radius: 4px;
+}
+
+.playground div > * {
+  backface-visibility: hidden;
+}
+
+.playground span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 25px;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  background: linear-gradient(to bottom, #fffff4, #f2ffda);
+}
+
+.playground img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  background: white;
+  transform: rotateY(180deg);
+}
+
+
+/*  NotFound Component Style  */
+.not-found-modal {
+  text-align: center;
+  padding: 64px 96px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(20px);
+  animation: popup_anim .5s;
+}
+
+.not-found-modal h1 {
+  font-size: 64px;
+  font-weight: 700;
+}
+
+.not-found-modal p {
+  font-size: 32px;
+}
+
+.not-found-modal a {
+  font-size: 20px;
+}
+
+.not-found-modal a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+
+/*  animations  */
+@keyframes button_anim {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes scale_anim {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+@keyframes popup_anim {
+  0% { transform: scale(0); }
+  40% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes disappear_card_anim {
+  0% { transform: scale(1); }
+  99% { transform: scale(0); visibility: visible; }
+  100% { transform: scale(0); visibility: hidden; }
+}
+
+
+/*  mobile responsive  */
+@media screen and (max-width:900px) {
+  .center-align {
+    flex-direction: column;
+  }
+  
+  .auth-card {
+    flex-direction: column;
+  }
+
+  .cover-panel {
+    width: 104%;
+    height: 50%;
+    transform: translate(-50%, 0%);
+  }
+
+  .cover-panel.active {
+    transform: translate(-50%, -100%);
+  }
+
+  .playground {
+    width: 70vw;
+    height: 70vw;
+  }
+}
+
+@media screen and (max-width:400px) {
+  .center-align {
+    flex-direction: column;
+  }
+  .auth-card input {
+    width: 200px;
+  }
+
+  .cover-panel h1 {
+    font-size: 32px;
+  }
+
+  .option-modal {
+    width: 100%;
+  }
+
+  .playground {
+    width: 80vw;
+    height: 80vw;
+  }
+}
