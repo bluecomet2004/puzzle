@@ -1,2 +1,2 @@
 # puzzle
-Picture matching puzzle game with front-end, back-end, and admin.
+Puzzle Game playing with matching the same pictures.

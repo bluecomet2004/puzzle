@@ -15,6 +15,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "axios": "^1.4.0",
     "mdb-vue-ui-kit": "^4.0.0",
     "pinia": "^2.0.36",
     "sweetalert2": "^11.7.5",
