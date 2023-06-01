@@ -1,11 +1,88 @@
 import math
 from datetime import datetime
+from django.core import serializers
 from django.contrib.auth.hashers import make_password
-from app.models import UserModel, GameHistoryModel
-from app.serializers import UserSerializer, GameHistorySerializer
+from app.models import UserModel, GameHistoryModel, generate_token, get_user_from_token
+from app.serializers.adminSerializer import UserSerializer, GameHistorySerializer
+from app.serializers.userSerializer import RegisterSerializer, LoginSerializer
 from rest_framework import status, generics
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+
+
+class RegisterView(generics.GenericAPIView):
+    serializer_class = RegisterSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user_account = serializer.save()
+            user = serializers.serialize('python', [user_account])[0]['fields']
+            return Response({
+                "success": True,
+                "message": "Successfully registered",
+                "user": user
+            }, status=status.HTTP_201_CREATED)
+        else:   
+            return Response({
+                "success": False,
+                "message": serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            checked_user = serializer.check_user()
+            token = generate_token(checked_user, "puzzle", 3600)
+            user = serializers.serialize('python', [checked_user])[0]['fields']
+            return Response({
+                "success": True,
+                "message": "Welcome back!",
+                "user": user,
+                "token": token
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                "success": False,
+                "message": serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class TokenView(generics.GenericAPIView):
+    serializer_class = UserSerializer
+
+    def get(self, request):
+        header = request.META.get("HTTP_AUTHORIZATION")
+        token = header.split()[1] if header else None
+        decoded_user = get_user_from_token(token, "puzzle")
+
+        if decoded_user == None:
+            return Response({
+                "success": False,
+                "message": "The token has expired."
+            }, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            user = UserModel.objects.filter(email=decoded_user.email)
+            user_data = serializers.serialize('python', [decoded_user])[0]['fields']
+            if user.exists() == True:
+                return Response({
+                    "success": True,
+                    "message": "Token is valid.",
+                    "user": {
+                        "name": user_data["name"],
+                        "email": user_data["email"],
+                        "createdAt": user_data["createdAt"]
+                    }
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "success": False,
+                    "message": "The token has expired."
+                }, status=status.HTTP_401_UNAUTHORIZED)
+        
 
 class UserView(generics.GenericAPIView):
     serializer_class = UserSerializer
@@ -107,43 +184,29 @@ class UserView(generics.GenericAPIView):
                 }, status=status.HTTP_400_BAD_REQUEST)
             
     def delete(self, request):
-        pk = request.GET.get('id')
-        user = self.get_user_by_pk(pk=pk)
+        pk = request.GET.get('id', 'all')
 
-        if user == None:
-            return Response({
-                "success": False,
-                "message": "Cannot find the user."
-            }, status=status.HTTP_404_NOT_FOUND)
-        else:
+        if pk == 'all':
+            user = UserModel.objects.all()
             user.delete()
             return Response({
                 "success": True,
-                "message": "Deleted successfully."
+                "users": user
             }, status=status.HTTP_204_NO_CONTENT)
-        
+        else:
+            user = self.get_user_by_pk(pk=pk)
 
-class LoginView(generics.GenericAPIView):
-    serializer_class = UserSerializer
-    queryset = UserModel
-
-    def get_user_by_email(self, email):
-        try:
-            return UserModel.objects.get(email=email)
-        except:
-            return None
-    
-    def post(self, request):
-        loginData = request.data
-        user = self.get_user_by_email(email=loginData["email"])
-
-        if user == None:
-            return Response({
-                "success": False,
-                "message": "Cannot find the user."
-            }, status=status.HTTP_404_NOT_FOUND)
-        # else:
-            # auth = JSONWebTokenAuthentication()
+            if user == None:
+                return Response({
+                    "success": False,
+                    "message": "Cannot find the user."
+                }, status=status.HTTP_404_NOT_FOUND)
+            else:
+                user.delete()
+                return Response({
+                    "success": True,
+                    "message": "Deleted successfully."
+                }, status=status.HTTP_204_NO_CONTENT)
 
 
 class GameHistoryView(generics.GenericAPIView):
@@ -175,10 +238,12 @@ class GameHistoryView(generics.GenericAPIView):
         historyData = request.data
         serializer = self.serializer_class(data=historyData)
         if serializer.is_valid():
-            serializer.save()
+            history = serializer.save()
+            json_history = serializers.serialize('python', [history])[0]['fields']
             return Response({
                 "success": True,
-                "message": "Successfully created"
+                "message": "Successfully created",
+                "history": json_history
             }, status=status.HTTP_201_CREATED)
         else:
             return Response({
@@ -187,17 +252,26 @@ class GameHistoryView(generics.GenericAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request):
-        pk = request.GET.get('id')
-        history = self.get_history_by_pk(pk=pk)
+        pk = request.GET.get('id', 'all')
 
-        if history == None:
-            return Response({
-                "success": False,
-                "message": "Cannot find the history."
-            }, status=status.HTTP_404_NOT_FOUND)
-        else:
+        if pk == 'all':
+            history = GameHistoryModel.objects.all()
             history.delete()
             return Response({
                 "success": True,
-                "message": "Deleted successfully."
-            }, status=status.HTTP_204_NO_CONTENT)     
+                "history": history
+            }, status=status.HTTP_204_NO_CONTENT)
+        else:
+            history = self.get_history_by_pk(pk=pk)
+
+            if history == None:
+                return Response({
+                    "success": False,
+                    "message": "Cannot find the history."
+                }, status=status.HTTP_404_NOT_FOUND)
+            else:
+                history.delete()
+                return Response({
+                    "success": True,
+                    "message": "Deleted successfully."
+                }, status=status.HTTP_204_NO_CONTENT)     

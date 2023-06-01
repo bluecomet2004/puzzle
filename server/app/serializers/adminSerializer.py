@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserModel, GameHistoryModel
+from ..models import UserModel, GameHistoryModel
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
