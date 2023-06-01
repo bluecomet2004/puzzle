@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { MDBBtn } from 'mdb-vue-ui-kit';
+import { useUserStore } from '../stores/user';
+
+const store = useUserStore();
+const token = localStorage.getItem('access_token');
 
 function login() {
-  window.location.href = '/auth';
+  if(token) {
+    localStorage.removeItem('access_token');
+  }
+  store.accessToken();
 }
 
 function startGame() {
-  window.location.href = '/option';
+  store.accessToken();
 }
 </script>
 
@@ -27,7 +34,7 @@ function startGame() {
         animation: popup_anim .4s .5s forwards"
       @click="login"
     >
-      LOGIN
+      {{ token ? "LOGOUT" : "LOGIN" }}
     </MDBBtn>
 
     <MDBBtn

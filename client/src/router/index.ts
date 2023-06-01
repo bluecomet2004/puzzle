@@ -3,6 +3,7 @@ import Home from '@/views/HomeView.vue';
 import Auth from '@/views/AuthView.vue';
 import Game from '@/views/GameView.vue';
 import Option from '@/views/OptionView.vue';
+import Result from '@/views/ResultView.vue';
 import NotFound from '@/views/NotFound.vue';
 
 const router = createRouter({
@@ -27,6 +28,10 @@ const router = createRouter({
       path: "/stage",
       name: "Game",
       component: Game
+    },
+    {
+      path: "/result",
+      component: Result
     },
     {
       path: "/:pathMatch(.*)*",

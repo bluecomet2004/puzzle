@@ -274,6 +274,32 @@
 }
 
 
+/*  Result Component Style  */
+.result-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 75vmin;
+  height: 400px;
+  border-radius: 4px;
+  box-shadow: 0 0 24px rgba(0,0,0,0.1);
+  background-color: white;
+  animation: popup_anim .5s;
+}
+
+.result-card h1 {
+  font-weight: bold;
+  color: #21a6ff;
+}
+
+.result-card p {
+  font-size: 3vmin;
+  padding-top: 20px;
+  text-align: center;
+}
+
+
 /*  NotFound Component Style  */
 .not-found-modal {
   text-align: center;

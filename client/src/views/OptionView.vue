@@ -1,29 +1,25 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2';
 import { MDBInput, MDBRadio, MDBBtn, MDBIcon, MDBRange } from 'mdb-vue-ui-kit';
-import { reactive } from 'vue';
+import { useGameStore } from '../stores/game';
+import router from '@/router';
 
-const level = reactive({
-  difficulty: 'easy',
-  size: 4,
-  disabled: true,
-  time: 300
-});
+const store = useGameStore();
 
 const changeLevel = (value: string) => {
-  level.difficulty = value;
+  store.options.difficulty = value;
 
   switch(value) {
-    case 'easy': level.size = 4; level.disabled = true; break;
-    case 'medium': level.size = 6; level.disabled = true; break;
-    case 'hard': level.size = 10; level.disabled = true; break;
-    case 'custom': level.disabled = false; break;
+    case 'easy': store.options.size = 4; store.options.disabled = true; break;
+    case 'medium': store.options.size = 6; store.options.disabled = true; break;
+    case 'hard': store.options.size = 10; store.options.disabled = true; break;
+    case 'custom': store.options.disabled = false; break;
     default: break;
   }
 }
 
-const sendOption = () => {
-  if(level.size % 2 !== 0) {
+const setOption = () => {
+  if(store.options.size % 2 !== 0) {
     Swal.fire({
       toast: true,
       position: "top-right",
@@ -33,7 +29,7 @@ const sendOption = () => {
       text: "Matrix must be made by even numbers.",
       showConfirmButton: false
     });
-  } else if(level.size < 4) {
+  } else if(store.options.size < 4) {
     Swal.fire({
       toast: true,
       position: "top-right",
@@ -43,7 +39,7 @@ const sendOption = () => {
       text: "Matrix must be grater than 4.",
       showConfirmButton: false
     });
-  } else if(level.size > 20) {
+  } else if(store.options.size > 20) {
     Swal.fire({
       toast: true,
       position: "top-right",
@@ -54,7 +50,8 @@ const sendOption = () => {
       showConfirmButton: false
     });
   } else {
-    window.alert('Success');
+    store.options.setted = true;
+    router.push("/stage");
   }
 }
 </script>
@@ -82,25 +79,25 @@ const sendOption = () => {
             label="Easy"
             value="easy"
             @input="changeLevel('easy')"
-            v-model="level.difficulty"
+            v-model="store.options.difficulty"
           />
           <MDBRadio
             label="Medium"
             value="medium"
             @input="changeLevel('medium')"
-            v-model="level.difficulty"
+            v-model="store.options.difficulty"
           />
           <MDBRadio
             label="Hard"
             value="hard"
             @input="changeLevel('hard')"
-            v-model="level.difficulty"
+            v-model="store.options.difficulty"
           />
           <MDBRadio
             label="Custom"
             value="custom"
             @input="changeLevel('custom')"
-            v-model="level.difficulty"
+            v-model="store.options.difficulty"
           />
         </div>
 
@@ -111,8 +108,8 @@ const sendOption = () => {
             max=12
             min=4
             step=2
-            v-model="level.size"
-            :disabled="level.disabled"
+            v-model="store.options.size"
+            :disabled="store.options.disabled"
             />
           &nbsp;&nbsp;X&nbsp;&nbsp;
           <MDBInput
@@ -121,19 +118,19 @@ const sendOption = () => {
             max=12
             min=4
             step=2
-            v-model="level.size"
-            :disabled="level.disabled"
+            v-model="store.options.size"
+            :disabled="store.options.disabled"
           />
         </div>
       </div>
 
       <div style="margin-top:32px">
         <p><MDBIcon icon="home" /> Time(second):</p>
-        <MDBRange :min="0" :max="2000" v-model="level.time" />
+        <MDBRange :min="0" :max="2000" v-model="store.options.totalTime" />
       </div>
 
       <div class="content-center">
-        <MDBBtn color="primary" @click="sendOption">OK</MDBBtn>
+        <MDBBtn color="primary" @click="setOption">OK</MDBBtn>
       </div>
     </div>
   </div>

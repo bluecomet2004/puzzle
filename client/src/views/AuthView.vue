@@ -20,7 +20,7 @@ const registerData = reactive({
   name: '',
   email: '',
   password: '',
-  confirm: ''
+  password2: ''
 });
 
 const loginSchema = yup.object().shape({
@@ -29,7 +29,7 @@ const loginSchema = yup.object().shape({
 });
 
 const registerSchema = yup.object().shape({
-  confirm: yup.string().required().oneOf([yup.ref('password')], "Passwords must be match."),
+  password2: yup.string().required().oneOf([yup.ref('password')], "Passwords must be match."),
   password: yup.string().required().min(6).max(30),
   email: yup.string().required().email(),
   name: yup.string().required().max(255)
@@ -37,7 +37,32 @@ const registerSchema = yup.object().shape({
 
 const loginSubmit = () => {
   loginSchema.validate(loginData)
-    .then(() => console.info('Validation success!'))
+    .then(() => {
+      store.loginUser(loginData)
+        .then(response => {
+          if(response.success === true) {
+            Swal.fire({
+              title: response.message,
+              icon: 'success',
+              confirmButtonText: "Go to option"
+            })
+            .then(() => {
+              localStorage.setItem('access_token', response.token);
+              store.accessToken();
+            });
+          } else {
+            Swal.fire({
+              toast: true,
+              position: 'top-right',
+              icon: 'error',
+              timer: 3000,
+              timerProgressBar: true,
+              text: response.message,
+              showConfirmButton: false
+            });
+          }
+        })
+    })
     .catch(error => Swal.fire({
       toast: true,
       position: "top-right",
@@ -68,7 +93,7 @@ const registerSubmit = () => {
             registerData.name = '';
             registerData.email = '';
             registerData.password = '';
-            registerData.confirm = '';
+            registerData.password2 = '';
             authMethod.isLogin = true;
           } else {
             Swal.fire({
@@ -135,7 +160,7 @@ const toggleMethod = () => {
           <MDBInput name="name" size="lg" type="text" label="Full Name" v-model="registerData.name" />
           <MDBInput name="email" size="lg" type="text" label="Email ID" v-model="registerData.email" />
           <MDBInput name="password" size="lg" type="password" label="New Password" v-model="registerData.password" />
-          <MDBInput name="confirm" size="lg" type="password" label="Confirm Password" v-model="registerData.confirm" />
+          <MDBInput name="password2" size="lg" type="password" label="Confirm Password" v-model="registerData.password2" />
 
           <p @click="toggleMethod">Already have an account?</p>
           <button>REGISTER</button>

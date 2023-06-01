@@ -5,9 +5,15 @@ import type { PuzzleMatrix } from '@/utils/types';
 import GameCard from '@/components/GameCard.vue';
 import images from '../utils/images';
 import Swal from 'sweetalert2';
+import { useGameStore } from '../stores/game';
+import type { GameHistory } from '../utils/types';
+import { useUserStore } from '../stores/user';
 
-const level = 'easy';
-const size = 4;
+const store = useGameStore();
+const userStore = useUserStore();
+const level: string = store.options.difficulty;
+const size: number = store.options.size;
+const timeLimit: number = store.options.totalTime;
 const hints = ref(5);
 const totalScore = ref(0);
 const rowTemplate = `repeat(${size}, 1fr)`;
@@ -15,9 +21,10 @@ const columnTemplate = `repeat(${size}, 1fr)`;
 const puzzleMatrix = ref<PuzzleMatrix[]>([]);
 const openedCards = ref<PuzzleMatrix[]>([]);
 const remainCards = ref(size * size);
-const timeLimit: number = 250;
 const remainTime = ref(timeLimit);
 let imageNumbers: number[] = [];
+
+if(!store.options.setted) window.location.href = "/option";
 
 for (let i = 0; i < size * size / 2; i++) {
   imageNumbers.push(Math.floor(Math.random() * 20));
@@ -133,13 +140,24 @@ function finishGame() {
   } else {
     totalScore.value = Math.ceil(totalScore.value) / 10;
   }
-  const spentHour = Math.floor((timeLimit-remainTime.value) / 60);
-  const spentSecond = timeLimit - remainTime.value;
 
   Swal.fire({
     title: "Game Over",
     icon: 'info',
-    html: `Your Score: ${totalScore.value}<br />Spent Time: ${spentHour>9?spentHour:`0${spentHour}`}:${spentSecond>9?spentSecond:`0${spentSecond}`}`
+    confirmButtonText: 'Show Result'
+  })
+  .then(() => {
+    const history: GameHistory = {
+      name: userStore.userData.name,
+      email: userStore.userData.email,
+      score: totalScore.value,
+      difficulty: store.options.difficulty,
+      matrixSize: store.options.size,
+      limitTime: timeLimit,
+      overTime: timeLimit - remainTime.value
+    }
+
+    store.reportHistory(history);
   });
 }
 
