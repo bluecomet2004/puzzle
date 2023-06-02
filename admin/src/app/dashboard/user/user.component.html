@@ -6,15 +6,30 @@
         <td>No</td>
         <td>Name</td>
         <td>Email</td>
+        <td>Created</td>
+        <td>Updated</td>
         <td>Actions</td>
     </thead>
 
     <tbody>
-      <tr>
-        <td>1</td>
-        <td>Morgan</td>
-        <td>mmastrangelo1120@gmail.com</td>
+      <tr *ngFor="let user of userData.list; index as idx">
+        <td>{{ idx + 1 }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ formatDateTime(user.createdAt) }}</td>
+        <td>{{ formatDateTime(user.updatedAt) }}</td>
+        <td>
+          <button><fa-icon [icon]="editIcon"></fa-icon></button>
+          <button><fa-icon [icon]="deleteIcon"></fa-icon></button>
+        </td>
       </tr>
     </tbody>
   </table>
+
+  <div class="pagination">
+    <button><fa-icon [icon]="firstPageIcon"></fa-icon></button>
+    <button><fa-icon [icon]="prevPageIcon"></fa-icon></button>
+    <button><fa-icon [icon]="nextPageIcon"></fa-icon></button>
+    <button><fa-icon [icon]="lastPageIcon"></fa-icon></button>
+  </div>
 </main>
