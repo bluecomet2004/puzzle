@@ -1,0 +1,72 @@
+.home-container
+  font-family: Arial, Helvetica, sans-serif
+  width: 100vw
+  height: 100vh
+  overflow: hidden
+
+  .bg-container
+    width: 100vw
+    height: 100vh
+    background-image: url("/assets/bg.jpg")
+    background-size: cover
+    background-blend-mode: darken
+    background-color: rgba(0,0,0,0.1)
+    animation: bg_scale_anim 2s
+
+    @keyframes bg_scale_anim
+      from
+        transform: scale(1.1)
+      to
+        transform: scale(1)
+
+  main
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    position: absolute
+    top: 0
+    left: 0
+    width: 100vw
+    height: 100vh
+
+    h1
+      font-size: 12vmin
+      font-weight: 800
+      text-shadow: 0.5vmin 0.5vmin 0.5vmin rgba(0,0,0,0.5)
+      color: white
+
+    .card-container
+      display: flex
+
+    .card
+      display: flex
+      justify-content: center
+      align-items: center
+      font-size: 4vmin
+      font-weight: bold
+      width: 400px
+      height: 250px
+      border-radius: 4px
+      box-shadow: 0 16px 16px rgba(0,0,0,0.1)
+      background: rgb(26,45,62)
+      color: white
+      margin: 8px
+      text-decoration: none
+      transition: all .25s
+
+      &:hover
+        cursor: pointer
+        box-shadow: 0 16px 20px rgba(0,0,0,0.5)
+        background: rgb(38, 60, 80)
+        transform: translateY(-8px)
+
+
+@media screen and (max-width: 800px)
+  main
+    .card-container
+      flex-direction: column
+
+      .card
+        width: 80vw
+        height: 50vw

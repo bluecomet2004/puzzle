@@ -4,6 +4,9 @@ dependencies:
   axios:
     specifier: ^1.4.0
     version: 1.4.0
+  js-confetti:
+    specifier: ^0.11.0
+    version: 0.11.0
   mdb-vue-ui-kit:
     specifier: ^4.0.0
     version: 4.0.0
@@ -4685,6 +4688,10 @@ packages:
       glob: 8.1.0
       nopt: 6.0.0
     dev: true
+
+  /js-confetti@0.11.0:
+    resolution: {integrity: sha512-Hc7I3VI4r4H0nq5q/oQK+JJwGoYRYVHK72fGk8E9Ay1dbh+aiZ9yl0yFp1K4oYeq7YFDQAndYChwqLPA3QWQuA==}
+    dev: false
 
   /js-sdsl@4.4.0:
     resolution: {integrity: sha512-FfVSdx6pJ41Oa+CF7RDaFmTnCaFhua+SNYQX74riGOpl96x+2jQCqEfQ2bnXu/5DPCqlRuiqyvTJM0Qjz26IVg==}
