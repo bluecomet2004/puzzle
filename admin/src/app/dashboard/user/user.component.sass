@@ -8,6 +8,7 @@ main
   padding: 24px
 
   table
+    position: relative
     font-size: 20px
     width: 100%
     border: 1px solid white
@@ -19,6 +20,31 @@ main
       text-shadow: 0.25vmin 0.25vmin 0.25vmin rgba(0,0,0,0.5)
       margin: 24px 0
       color: white
+
+    .search
+      font-size: 16px
+      position: absolute
+      top: 0
+      left: 0
+      border: 0
+      outline: 0
+      border-radius: 99px
+      padding: 12px 20px
+      margin: 24px
+
+    .page-select
+      font-size: 16px
+      position: absolute
+      top: 0
+      right: 0
+      border: 0
+      outline: 0
+      border-radius: 99px
+      padding: 12px
+      margin: 24px
+
+      option
+        font-size: 20px
 
     thead
       background-color: rgb(26,45,62)
@@ -65,3 +91,6 @@ main
 
       &:active
         background: white
+
+      .active
+        background: #4caf50

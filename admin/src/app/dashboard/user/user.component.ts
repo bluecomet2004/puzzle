@@ -31,14 +31,23 @@ export class UserComponent implements OnInit {
     list: []
   };
 
+  page: number = 1;
+  limit: number = 10;
+  search: string = '';
+  pages: Array<number> = [];
+
   constructor(private userService: UserService) {}
   ngOnInit(): void {
     this.get();
   }
 
   get(): void {
-    this.userService.get().subscribe((response: UserDashbaord): void => {
+    this.userService.get(this.page, this.limit, this.search).subscribe((response: UserDashbaord): void => {
       this.userData = response;
+      this.pages = [];
+      for(let i = 1; i <= this.userData.last_page; i++) {
+        this.pages.push(i);
+      }
     });
   }
 
@@ -48,5 +57,24 @@ export class UserComponent implements OnInit {
     const formattedTime = date.toLocaleTimeString('en-US', {timeStyle: 'short'});
   
     return `${formattedDate} ${formattedTime}`;
+  }
+
+  movePage(page: number): void {
+    this.page = page;
+    this.get();
+  }
+
+  goToNextPage(): void {
+    if(this.page < this.userData.last_page) {
+      this.page ++;
+      this.get();
+    }
+  }
+
+  goToPrevPage(): void {
+    if(this.page > 1) {
+      this.page --;
+      this.get();
+    }
   }
 }
