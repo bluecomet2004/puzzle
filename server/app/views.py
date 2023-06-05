@@ -99,12 +99,6 @@ class UserView(generics.GenericAPIView):
             return UserModel.objects.get(pk=pk)
         except:
             return None
-        
-    def get_history_by_pk(self, pk):
-        try:
-            return GameHistoryModel.objects.get(pk=pk)
-        except:
-            return None
 
     def get(self, request):
         page_param = int(request.GET.get('page', 1))
@@ -192,7 +186,7 @@ class UserView(generics.GenericAPIView):
             return Response({
                 "success": True,
                 "users": user
-            }, status=status.HTTP_204_NO_CONTENT)
+            }, status=status.HTTP_200_OK)
         else:
             user = self.get_user_by_pk(pk=pk)
 
@@ -206,16 +200,22 @@ class UserView(generics.GenericAPIView):
                 return Response({
                     "success": True,
                     "message": "Deleted successfully."
-                }, status=status.HTTP_204_NO_CONTENT)
+                }, status=status.HTTP_200_OK)
 
 
 class GameHistoryView(generics.GenericAPIView):
     serializer_class = GameHistorySerializer
     queryset = GameHistoryModel
 
+    def get_history_by_pk(self, pk):
+        try:
+            return GameHistoryModel.objects.get(pk=pk)
+        except:
+            return None
+
     def get(self, request):
-        page_param = request.GET.get('page', 1)
-        limit_param = request.GET.get('limit', 10)
+        page_param = int(request.GET.get('page', 1))
+        limit_param = int(request.GET.get('limit', 10))
         search_param = request.GET.get('search')
         start_num = (page_param - 1) * limit_param
         end_num = page_param * limit_param
@@ -260,7 +260,7 @@ class GameHistoryView(generics.GenericAPIView):
             return Response({
                 "success": True,
                 "history": history
-            }, status=status.HTTP_204_NO_CONTENT)
+            }, status=status.HTTP_200_OK)
         else:
             history = self.get_history_by_pk(pk=pk)
 
@@ -274,4 +274,4 @@ class GameHistoryView(generics.GenericAPIView):
                 return Response({
                     "success": True,
                     "message": "Deleted successfully."
-                }, status=status.HTTP_204_NO_CONTENT)     
+                }, status=status.HTTP_200_OK)     

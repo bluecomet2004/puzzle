@@ -18,3 +18,7 @@ export interface HistoryDashboard {
   list: History[];
 }
 
+export interface HistoryMessage {
+  success: boolean;
+  message: string;
+}

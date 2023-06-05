@@ -1,1 +1,60 @@
-<p>history works!</p>
+<main>
+  <table>
+    <caption>GAME HISTORY</caption>
+    
+    <input
+      class="search"
+      type="text"
+      placeholder="Search..."
+      [(ngModel)]="search"
+      (keydown.enter)="get()"
+    />
+
+    <select class="page-select" [(ngModel)]="limit" (change)="get()">
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+    </select>
+
+    <thead>
+        <td>No</td>
+        <td>Name</td>
+        <td>Email</td>
+        <td>Score</td>
+        <td>Difficulty</td>
+        <td>Matrix</td>
+        <td>Limit Time</td>
+        <td>Over Time</td>
+        <td>Finished</td>
+        <td>Actions</td>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let history of historyData.list; index as idx">
+        <td>{{ idx + 1 }}</td>
+        <td>{{ history.name }}</td>
+        <td>{{ history.email }}</td>
+        <td>{{ history.score }}</td>
+        <td>{{ history.difficulty }}</td>
+        <td>{{ history.matrixSize }}x{{ history.matrixSize }}</td>
+        <td>{{ history.limitTime }}s</td>
+        <td>{{ history.overTime }}s</td>
+        <td>{{ formatDateTime(history.finishedAt) }}</td>
+        <td>
+          <button title="Delete history" (click)="delete(history.id)"><fa-icon [icon]="deleteIcon"></fa-icon></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <button (click)="movePage(1)"><fa-icon [icon]="firstPageIcon"></fa-icon></button>
+    <button (click)="goToPrevPage()"><fa-icon [icon]="prevPageIcon"></fa-icon></button>
+    
+    <button *ngFor="let n of pages" (click)="movePage(n)">{{ n }}</button>
+    
+    <button (click)="goToNextPage()"><fa-icon [icon]="nextPageIcon"></fa-icon></button>
+    <button (click)="movePage(historyData.last_page)"><fa-icon [icon]="lastPageIcon"></fa-icon></button>
+  </div>
+</main>
