@@ -2,9 +2,15 @@
   <table>
     <caption>UESRS</caption>
     
-    <input class="search" type="text" placeholder="Search..." />
+    <input
+      class="search"
+      type="text"
+      placeholder="Search..."
+      [(ngModel)]="search"
+      (keydown.enter)="get()"
+    />
 
-    <select [value]="10" class="page-select">
+    <select class="page-select" [(ngModel)]="limit" (change)="get()">
       <option value="5">5</option>
       <option value="10">10</option>
       <option value="15">15</option>
@@ -28,8 +34,8 @@
         <td>{{ formatDateTime(user.createdAt) }}</td>
         <td>{{ formatDateTime(user.updatedAt) }}</td>
         <td>
-          <button title="Edit user"><fa-icon [icon]="editIcon"></fa-icon></button>
-          <button title="Delete user"><fa-icon [icon]="deleteIcon"></fa-icon></button>
+          <button title="Edit user" (click)="showModal(user)"><fa-icon [icon]="editIcon"></fa-icon></button>
+          <button title="Delete user" (click)="delete(user.id)"><fa-icon [icon]="deleteIcon"></fa-icon></button>
         </td>
       </tr>
     </tbody>
@@ -43,5 +49,20 @@
     
     <button (click)="goToNextPage()"><fa-icon [icon]="nextPageIcon"></fa-icon></button>
     <button (click)="movePage(userData.last_page)"><fa-icon [icon]="lastPageIcon"></fa-icon></button>
+  </div>
+
+  <div
+    #editModal
+    class="modal-container"
+    [ngStyle]="{'display':showEditModal?'flex':'none'}"
+    (click)="hideModal($event)"
+  >
+    <div class="modal">
+      <form (submit)="update()">
+        <p>Type name to update</p>
+        <input name="name" [(ngModel)]="updateData.name" [(ngModel)]="updateData.name" />
+        <button>Update</button>
+      </form>
+    </div>
   </div>
 </main>

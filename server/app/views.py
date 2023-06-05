@@ -165,7 +165,7 @@ class UserView(generics.GenericAPIView):
         if user == None:
             return Response({
                 "success": False,
-                "message": "Cannot find the user"
+                "message": "Cannot find the user."
             }, status=status.HTTP_404_NOT_FOUND)
         else:
             serializer = self.serializer_class(user, data=userData, partial=True)

@@ -13,3 +13,13 @@ export interface UserDashbaord {
   last_page: number;
   list: User[];
 }
+
+export interface editUser {
+  id: string;
+  name: string;
+}
+
+export interface Message {
+  success: boolean;
+  message: string;
+}

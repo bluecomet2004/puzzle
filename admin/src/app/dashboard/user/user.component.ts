@@ -8,7 +8,8 @@ import {
   faTrash
 } from '@fortawesome/free-solid-svg-icons';
 import { UserService } from './user.service';
-import { UserDashbaord } from './user';
+import { Message, User, UserDashbaord, editUser } from './user';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user',
@@ -31,10 +32,16 @@ export class UserComponent implements OnInit {
     list: []
   };
 
+  updateData: editUser = {
+    id: "",
+    name: ""
+  }
+
   page: number = 1;
   limit: number = 10;
   search: string = '';
   pages: Array<number> = [];
+  showEditModal: boolean = false;
 
   constructor(private userService: UserService) {}
   ngOnInit(): void {
@@ -51,6 +58,58 @@ export class UserComponent implements OnInit {
     });
   }
 
+  update(): void {
+    this.userService.update(this.updateData.id, this.updateData.name)
+      .subscribe((response: Message): void => {
+        if(response.success) {
+          Swal.fire({
+            title: "Success",
+            icon: "success",
+            text: response.message
+          });
+        } else {
+          Swal.fire({
+            title: "Failed",
+            icon: "error",
+            text: response.message
+          });
+        }
+
+        this.get();
+        this.showEditModal = !this.showEditModal;
+      });
+  }
+  
+  delete(id: string): void {
+    Swal.fire({
+      icon: "question",
+      text: "Are you sure you want to delete this user?",
+      confirmButtonText: "Yes",
+      showCancelButton: true,
+      cancelButtonText: "No"
+    }).then(result => {
+      if(result.isConfirmed) {
+        this.userService.delete(id).subscribe((response: Message): void => {
+          if(response.success) {
+            Swal.fire({
+              title: "Success",
+              icon: "success",
+              text: response.message
+            });
+          } else {
+            Swal.fire({
+              title: "Failed",
+              icon: "error",
+              text: response.message
+            });
+          }
+        });
+      }
+
+      this.get();
+    });
+  }
+
   formatDateTime(datetime: Date): string {
     const date = new Date(datetime);
     const formattedDate = date.toLocaleDateString('en-US', {year:'numeric',month:'2-digit',day:'2-digit'});
@@ -62,7 +121,6 @@ export class UserComponent implements OnInit {
   movePage(page: number): void {
     this.page = page;
     this.get();
-    console.log(this.search);
   }
 
   goToNextPage(): void {
@@ -76,6 +134,18 @@ export class UserComponent implements OnInit {
     if(this.page > 1) {
       this.page --;
       this.get();
+    }
+  }
+
+  showModal(user: User): void {
+    this.updateData.id = user.id;
+    this.updateData.name = user.name;
+    this.showEditModal = !this.showEditModal;
+  }
+
+  hideModal(event: MouseEvent): void {
+    if(event.target === event.currentTarget) {
+      this.showEditModal = !this.showEditModal;
     }
   }
 }
