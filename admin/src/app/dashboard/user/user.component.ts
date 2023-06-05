@@ -62,6 +62,7 @@ export class UserComponent implements OnInit {
   movePage(page: number): void {
     this.page = page;
     this.get();
+    console.log(this.search);
   }
 
   goToNextPage(): void {
