@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { MDBBtn } from 'mdb-vue-ui-kit';
 import { useUserStore } from '../stores/user';
+import router from '@/router';
 
 const store = useUserStore();
-const token = localStorage.getItem('access_token');
+let token = localStorage.getItem('access_token');
 
 function login() {
   if(token) {
     localStorage.removeItem('access_token');
+    token = localStorage.getItem('access_token');
+  } else {
+    router.push("/auth");
   }
-  store.accessToken();
 }
 
 function startGame() {
